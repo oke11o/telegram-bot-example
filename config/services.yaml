@@ -5,6 +5,9 @@
 # https://symfony.com/doc/current/best_practices/configuration.html#application-related-configuration
 parameters:
     locale: 'en'
+    telegram_bot_api_token: '531550788:AAFL9olZxsNkEDym63AkDm3Xv2I9MjrnvNQ'
+    telegram_bot_name: Sb_lsd_tmp_bot
+    telegram_bot_code: Sb_lsd_tmp_bot
 
 services:
     # default configuration for services in *this* file
@@ -14,6 +17,8 @@ services:
         public: false       # Allows optimizing the container by removing unused services; this also means
                             # fetching services directly from the container via $container->get() won't work.
                             # The best practice is to be explicit about your dependencies anyway.
+        bind:
+            $telegramBotApiToken: "%telegram_bot_api_token%"
 
     # makes classes in src/ available to be used as services
     # this creates a service per class whose id is the fully-qualified class name
