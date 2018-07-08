@@ -30,6 +30,10 @@ class TelegramHandler implements ServiceSubscriberInterface
      * @var ContainerInterface
      */
     private $container;
+    /**
+     * @var HandlerResolver
+     */
+    private $resolver;
 
     /**
      * TelegramHandler constructor.
@@ -41,12 +45,14 @@ class TelegramHandler implements ServiceSubscriberInterface
         TelegramUserManager $userManager,
         EntityManagerInterface $em,
         ContainerInterface $container,
-        \Symfony\Component\Cache\Adapter\AdapterInterface $cache
+        \Symfony\Component\Cache\Adapter\AdapterInterface $cache,
+        HandlerResolver $resolver
     ) {
         $this->userManager = $userManager;
         $this->em = $em;
         $this->cache = $cache;
         $this->container = $container;
+        $this->resolver = $resolver;
     }
 
     /**
@@ -56,28 +62,26 @@ class TelegramHandler implements ServiceSubscriberInterface
     public function handleUpdate(Update $update): ReplyMessage
     {
         $user = $this->userManager->receiveUser($update);
+        $state = $this->currentUserState($user);
 
-        $updateHandler = $this->updateHandlerResolve($update, $user);
+        $updateHandler = $this->updateHandlerResolve($update, $user, $state);
 
-        return $updateHandler->handle($update, $user);
+        return $updateHandler->handle($update, $user, $state);
 
     }
 
     /**
      * @param Update $update
      * @param User $user
+     * @param null $state
      * @return TelegramUpdateHandlerInterface
      *
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    private function updateHandlerResolve(Update $update, User $user): TelegramUpdateHandlerInterface
+    private function updateHandlerResolve(Update $update, User $user, $state = null): TelegramUpdateHandlerInterface
     {
-        $state = $this->currentUserState($user);
-
-        $service = StartHandler::class;
-
-        return $this->container->get($service);
+        return $this->resolver->resolve($update, $user, $state);
     }
 
     /**

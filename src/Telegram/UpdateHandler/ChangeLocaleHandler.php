@@ -2,6 +2,7 @@
 
 namespace App\Telegram\UpdateHandler;
 
+
 use App\Entity\User;
 use App\Telegram\Type\ReplyMessage;
 use App\Telegram\Type\ReplyMessageFactory;
@@ -9,8 +10,9 @@ use Symfony\Component\Translation\TranslatorInterface;
 use TelegramBot\Api\Types\ReplyKeyboardMarkup;
 use TelegramBot\Api\Types\Update;
 
-class StartHandler extends AbstractHandler implements TelegramUpdateHandlerInterface
+class ChangeLocaleHandler extends AbstractHandler implements TelegramUpdateHandlerInterface
 {
+
     /**
      * @var ReplyMessageFactory
      */
@@ -30,9 +32,8 @@ class StartHandler extends AbstractHandler implements TelegramUpdateHandlerInter
         );
 
         $chatId = $update->getMessage()->getChat()->getId();
-        $text = 'start_message';
+        $text = 'change_locale';
 
         return $this->factory->create($chatId, $text, $buttons, $user->getRealLocale());
     }
-
 }

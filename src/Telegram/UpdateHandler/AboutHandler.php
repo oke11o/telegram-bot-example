@@ -9,7 +9,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 use TelegramBot\Api\Types\ReplyKeyboardMarkup;
 use TelegramBot\Api\Types\Update;
 
-class StartHandler extends AbstractHandler implements TelegramUpdateHandlerInterface
+class AboutHandler extends AbstractHandler implements TelegramUpdateHandlerInterface
 {
     /**
      * @var ReplyMessageFactory
@@ -30,9 +30,8 @@ class StartHandler extends AbstractHandler implements TelegramUpdateHandlerInter
         );
 
         $chatId = $update->getMessage()->getChat()->getId();
-        $text = 'start_message';
+        $text = 'about';
 
         return $this->factory->create($chatId, $text, $buttons, $user->getRealLocale());
     }
-
 }

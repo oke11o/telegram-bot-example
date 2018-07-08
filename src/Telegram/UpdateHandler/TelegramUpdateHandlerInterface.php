@@ -9,4 +9,6 @@ use TelegramBot\Api\Types\Update;
 interface TelegramUpdateHandlerInterface
 {
     public function handle(Update $update, User $user): ReplyMessage;
+
+    public static function getCommandName(): string;
 }

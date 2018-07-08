@@ -22,12 +22,11 @@ class ReplyMessageFactory
         $this->logger = $logger;
     }
 
-    public function create($chatId, $text, $replyMarkup = null)
+    public function create($chatId, $text, $replyMarkup = null, $locale = 'en')
     {
-        $locales = ['en', 'ru'];
         $parseMode = 'markdown';
         try {
-            $text = $this->translator->trans($text, [], null, $locales[\random_int(0, 1)]);
+            $text = $this->translator->trans($text, [], null, $locale);
         } catch (\Symfony\Component\Translation\Exception\InvalidArgumentException $e) {
             $this->logger->warning($e->getMessage());
         }

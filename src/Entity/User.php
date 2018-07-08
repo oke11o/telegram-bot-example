@@ -181,6 +181,16 @@ class User
         return $this;
     }
 
+    public function getRealLocale()
+    {
+        $locale = substr($this->getLocale(), 0, 2);
+        if (!\in_array($locale, ['en', 'ru'], true)) {
+            $locale = 'en';
+        }
+
+        return $locale;
+    }
+
     public function getIsTelegramBot(): bool
     {
         return $this->isTelegramBot;

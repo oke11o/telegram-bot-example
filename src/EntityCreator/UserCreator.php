@@ -12,6 +12,8 @@ class UserCreator
      */
     public function createByTelegramUser(\TelegramBot\Api\Types\User $user): User
     {
+        $locale = $user->getLanguageCode();
+
         return (new User())
             ->setUsername($user->getUsername())
             ->setTelegramId($user->getId())
@@ -19,6 +21,7 @@ class UserCreator
             ->setFirstName($user->getFirstName())
             ->setLastName($user->getLastName())
             ->setIsTelegramBot($user->isBot())
+            ->setLocale($locale)
             ;
     }
 }
