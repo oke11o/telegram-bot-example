@@ -5,7 +5,7 @@ namespace App\Telegram\UpdateHandler;
 use App\Entity\User;
 use Symfony\Component\Translation\TranslatorInterface;
 
-class AbstractHandler
+abstract class AbstractHandler
 {
     /**
      * @var TranslatorInterface

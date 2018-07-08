@@ -4,11 +4,16 @@ namespace App\Telegram;
 
 use App\Entity\User;
 use App\Manager\TelegramUserManager;
+use App\Telegram\State\TelegramStateInterface;
 use App\Telegram\Type\ReplyMessage;
 use App\Telegram\UpdateHandler\StartHandler;
 use App\Telegram\UpdateHandler\TelegramUpdateHandlerInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\Cache\Adapter\ArrayAdapter;
+use Symfony\Component\Cache\CacheItem;
+use Symfony\Component\Cache\Simple\FilesystemCache;
 use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use TelegramBot\Api\Types\Update;
 
@@ -19,17 +24,9 @@ class TelegramHandler implements ServiceSubscriberInterface
      */
     private $userManager;
     /**
-     * @var EntityManagerInterface
-     */
-    private $em;
-    /**
-     * @var \Symfony\Component\Cache\Adapter\FilesystemAdapter
+     * @var AdapterInterface
      */
     private $cache;
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
     /**
      * @var HandlerResolver
      */
@@ -38,20 +35,16 @@ class TelegramHandler implements ServiceSubscriberInterface
     /**
      * TelegramHandler constructor.
      * @param TelegramUserManager $userManager
-     * @param EntityManagerInterface $em
-     * @param \Symfony\Component\Cache\Adapter\AdapterInterface $cache
+     * @param AdapterInterface $cache
+     * @param HandlerResolver $resolver
      */
     public function __construct(
         TelegramUserManager $userManager,
-        EntityManagerInterface $em,
-        ContainerInterface $container,
-        \Symfony\Component\Cache\Adapter\AdapterInterface $cache,
+        AdapterInterface $cache,
         HandlerResolver $resolver
     ) {
         $this->userManager = $userManager;
-        $this->em = $em;
         $this->cache = $cache;
-        $this->container = $container;
         $this->resolver = $resolver;
     }
 
@@ -64,9 +57,17 @@ class TelegramHandler implements ServiceSubscriberInterface
         $user = $this->userManager->receiveUser($update);
         $state = $this->currentUserState($user);
 
-        $updateHandler = $this->updateHandlerResolve($update, $user, $state);
+        $updateHandler = $this->resolveUpdateHandler($update, $user, $state);
 
-        return $updateHandler->handle($update, $user, $state);
+        $response = $updateHandler->handle($update, $user, $state);
+
+        if ($response->isResetState()) {
+            $this->clearState($user);
+        } elseif ($response->getState()) {
+            $this->saveState($user, $response->getState());
+        }
+
+        return $response->getMessage();
 
     }
 
@@ -79,20 +80,23 @@ class TelegramHandler implements ServiceSubscriberInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    private function updateHandlerResolve(Update $update, User $user, $state = null): TelegramUpdateHandlerInterface
+    private function resolveUpdateHandler(Update $update, User $user, $state = null): TelegramUpdateHandlerInterface
     {
         return $this->resolver->resolve($update, $user, $state);
     }
 
     /**
      * @param User $user
-     * @return mixed|null|\Symfony\Component\Cache\CacheItem
+     * @return null|TelegramStateInterface
+     *
+     * @throws \Psr\Cache\InvalidArgumentException
      */
-    private function currentUserState(User $user)
+    private function currentUserState(User $user): ?TelegramStateInterface
     {
-        $key = sprintf('current_user_state_%d', $user->getId());
+        $key = $this->getCacheKey($user);
+
         if ($this->cache->hasItem($key)) {
-            return $this->cache->getItem($key);
+            return $this->cache->getItem($key)->get();
         }
 
         return null;
@@ -107,5 +111,43 @@ class TelegramHandler implements ServiceSubscriberInterface
         return [
             StartHandler::class,
         ];
+    }
+
+    /**
+     * @param User $user
+     * @param TelegramStateInterface|null $state
+     */
+    private function saveState(User $user, TelegramStateInterface $state = null): void
+    {
+        if (!$state) {
+            return;
+        }
+
+        $key = $this->getCacheKey($user);
+        $item = $this->cache->getItem($key);
+        if (!$item->isHit()) {
+            $item->set($state);
+            $this->cache->save($item);
+        }
+    }
+
+    /**
+     * @param User $user
+     * @throws \Psr\Cache\InvalidArgumentException
+     */
+    private function clearState(User $user)
+    {
+        $key = $this->getCacheKey($user);
+
+        $this->cache->deleteItem($key);
+    }
+
+    /**
+     * @param User $user
+     * @return string
+     */
+    private function getCacheKey(User $user): string
+    {
+        return sprintf('current_user_state_%d', $user->getId());
     }
 }

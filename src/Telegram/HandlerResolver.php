@@ -3,8 +3,10 @@
 namespace App\Telegram;
 
 use App\Entity\User;
+use App\Telegram\State\TelegramStateInterface;
 use App\Telegram\UpdateHandler\AboutHandler;
 use App\Telegram\UpdateHandler\BuyHandler;
+use App\Telegram\UpdateHandler\CancelHandler;
 use App\Telegram\UpdateHandler\ChangeLocaleHandler;
 use App\Telegram\UpdateHandler\OffersHandler;
 use App\Telegram\UpdateHandler\SellHandler;
@@ -48,11 +50,15 @@ class HandlerResolver implements ServiceSubscriberInterface
      * @throws \Psr\Container\ContainerExceptionInterface
      * @throws \Psr\Container\NotFoundExceptionInterface
      */
-    public function resolve(Update $update, User $user, $state = null): TelegramUpdateHandlerInterface
+    public function resolve(Update $update, User $user, TelegramStateInterface $state = null): TelegramUpdateHandlerInterface
     {
-
         $text = $update->getMessage()->getText();
         $serviceName = $this->resolveServiceName($text, $state);
+
+        if ($state) {
+            $serviceName = $state->resolveHandlerName($serviceName);
+        }
+
 
         return $this->container->get($serviceName);
     }
@@ -71,10 +77,10 @@ class HandlerResolver implements ServiceSubscriberInterface
     {
         $handlers = $this->getServiceMap();
 
+        //TODO: надо подумать
         if (\array_key_exists($text, $handlers)) {
             return $handlers[$text];
         }
-        //TODO:
 
         return StartHandler::class;
     }
@@ -88,6 +94,7 @@ class HandlerResolver implements ServiceSubscriberInterface
             SellHandler::class => 'sell_eth',
             OffersHandler::class => 'my_orders',
             ChangeLocaleHandler::class => 'change_locale',
+            CancelHandler::class => 'cancel',
         ];
     }
 

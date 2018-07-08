@@ -77,7 +77,7 @@ class TelegramUpdateCommand extends Command
             }
 
             $this->io->text(sprintf('Sleeping'));
-            sleep(3);
+            sleep(1);
             if ($this->shouldStop) {
                 break;
             }

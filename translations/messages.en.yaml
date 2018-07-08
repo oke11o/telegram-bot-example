@@ -4,3 +4,12 @@ buy_eth: Buy ETH
 sell_eth: Sell ETH
 about: About
 change_locale: Change language
+back: Back
+cancel: Сancel
+
+validate:
+  change_locale: Invalid locale
+
+form:
+  change_locale:
+    success: Locale change success

@@ -4,3 +4,12 @@ buy_eth: Купить ETH
 sell_eth: Продать ETH
 about: О сервисе
 change_locale: Сменить язык
+back: Назад
+cancel: Отмена
+
+validate:
+  change_locale: Язык указан неверно
+
+form:
+  change_locale:
+    success: Язык успешно изменен

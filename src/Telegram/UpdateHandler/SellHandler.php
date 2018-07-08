@@ -4,6 +4,8 @@
 namespace App\Telegram\UpdateHandler;
 
 use App\Entity\User;
+use App\Telegram\State\TelegramStateInterface;
+use App\Telegram\Type\HandleResponse;
 use App\Telegram\Type\ReplyMessage;
 use App\Telegram\Type\ReplyMessageFactory;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -25,7 +27,7 @@ class SellHandler extends AbstractHandler implements TelegramUpdateHandlerInterf
         parent::__construct($translator);
     }
 
-    public function handle(Update $update, User $user): ReplyMessage
+    public function handle(Update $update, User $user, TelegramStateInterface $state = null): HandleResponse
     {
         $buttons = new ReplyKeyboardMarkup(
             $this->getStdButtons($user)
@@ -35,6 +37,6 @@ class SellHandler extends AbstractHandler implements TelegramUpdateHandlerInterf
         $text = 'sell_eth';
 
 
-        return $this->factory->create($chatId, $text, $buttons, $user->getRealLocale());
+        return new HandleResponse($this->factory->create($chatId, $text, $buttons, $user->getRealLocale()));
     }
 }
