@@ -23,6 +23,14 @@ class TelegramUpdateCommand extends Command
      * @var TelegramHandler
      */
     private $handler;
+    /**
+     * @var boolean
+     */
+    private $shouldStop = false;
+    /**
+     * @var SymfonyStyle
+     */
+    private $io;
 
     public function __construct(TelegramBotApi $api, TelegramHandler $handler)
     {
@@ -44,13 +52,59 @@ class TelegramUpdateCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $io = new SymfonyStyle($input, $output);
+        $this->io = new SymfonyStyle($input, $output);
 
-        $updates = $this->api->getUpdates();
-        foreach ($updates as $update) {
-            $this->handler->handleUpdate($update);
+        declare(ticks = 1);
+        pcntl_signal(SIGINT, [$this, 'doInterrupt']);
+        pcntl_signal(SIGTERM, [$this, 'doTerminate']);
+
+        $count = 0;
+        while (true) {
+            $updates = $this->api->getUpdates();
+            $lastUpdateId = null;
+            foreach ($updates as $update) {
+                $count++;
+                $lastUpdateId = $update->getUpdateId();
+                $this->io->text(sprintf('Iteration=%d UpdateId=%d MessageId=%d', $count, $lastUpdateId, $update->getMessage()->getMessageId()));
+                $replyMessage = $this->handler->handleUpdate($update);
+                $this->api->sendMessage($replyMessage);
+                if ($this->shouldStop) {
+                    break;
+                }
+            }
+            if ($lastUpdateId) {
+                $this->api->getUpdates($lastUpdateId + 1, 1);//reset updates!!!
+            }
+
+            $this->io->text(sprintf('Sleeping'));
+            sleep(3);
+            if ($this->shouldStop) {
+                break;
+            }
         }
 
-        $io->success('You have a new command! Now make it your own! Pass --help to see your options.');
+
+        $this->io->success('DONE.');
+    }
+
+
+
+
+    /**
+     * Ctrl-C
+     */
+    private function doInterrupt()
+    {
+        $this->shouldStop = true;
+        $this->io->error('Interruption signal received.');
+    }
+
+    /**
+     * kill PID
+     */
+    private function doTerminate()
+    {
+        $this->shouldStop = true;
+        $this->io->error('Termination signal received.');
     }
 }
