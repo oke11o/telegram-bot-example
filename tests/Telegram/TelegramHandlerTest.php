@@ -37,7 +37,6 @@ class TelegramHandlerTest extends KernelTestCase
      */
     public function changeLocaleChain()
     {
-        $chain = $this->createChangeLocaleChain();
         $update = $this->createSimpleUpdate();
 
         $message = $this->handler->handleUpdate($update);
@@ -76,67 +75,5 @@ class TelegramHandlerTest extends KernelTestCase
                     ],
             ]
         );
-    }
-
-    private function createChangeLocaleChain()
-    {
-        return [
-            [
-                'request' => [
-                    'text' => 'start',
-                    'callback' => null,
-                ],
-                'response' => [
-                    'text' => 'hello',
-                    'buttons' => [
-                        'change_locale',
-                        'cancel',
-                    ],
-                    'buttonsType' => 'simple'
-                ],
-            ],
-            [
-                'request' => [
-                    'text' => 'change_locale',
-                    'callback' => null,
-                ],
-                'response' => [
-                    'text' => 'please_choose_locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                    ],
-                    'buttonsType' => 'simple'
-                ],
-            ],
-            [
-                'request' => [
-                    'text' => 'change_locale',
-                    'callback' => null,
-                ],
-                'response' => [
-                    'text' => 'invalid_locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                    ],
-                    'buttonsType' => 'simple'
-                ],
-            ],
-            [
-                'request' => [
-                    'text' => 'change_locale',
-                    'callback' => null,
-                ],
-                'response' => [
-                    'text' => 'invalid_locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                    ],
-                    'buttonsType' => 'simple'
-                ],
-            ],
-        ];
     }
 }
