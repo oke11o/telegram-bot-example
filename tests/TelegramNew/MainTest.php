@@ -2,22 +2,35 @@
 
 namespace Tests\App\TelegramNew;
 
-use App\Telegram\Type\ReplyMessage;
+use App\Entity\User;
+use App\Repository\UserRepository;
+use App\TelegramNew\Controller\CancelController;
 use App\TelegramNew\Main;
+use App\TelegramNew\Response\ClearReplyMessage;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
-use TelegramBot\Api\Types\ReplyKeyboardMarkup;
 use TelegramBot\Api\Types\Update;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class MainTest extends KernelTestCase
 {
+    private const FIRST_USER_ID = 1;
 
     /**
      * @var Main
      */
     private $main;
+    /**
+     * @var EntityManagerInterface
+     */
+    private $em;
+    /**
+     * @var UserRepository
+     */
+    private $userRepository;
 
     private static $needPurgeClear = true;
+    private static $testCount = 0;
 
     public function setUp()
     {
@@ -25,13 +38,15 @@ class MainTest extends KernelTestCase
         $container = self::$container;
 
         $this->main = $container->get(Main::class);
+        $this->em = $container->get(EntityManagerInterface::class);
+        $this->userRepository = $this->em->getRepository(User::class);
 
         if (self::$needPurgeClear) {
             self::$needPurgeClear = false;
 
             $cache = $container->get(AdapterInterface::class);
             $keys = [
-                'current_user_state_1', //TODO: hardcode. Need fix with fixtures
+                'current_user_state_'.self::FIRST_USER_ID, //TODO: hardcode. Need fix with fixtures
             ];
             foreach ($keys as $key) {
                 if ($cache->hasItem($key)) {
@@ -47,11 +62,26 @@ class MainTest extends KernelTestCase
      */
     public function changeLocaleChain($request, $response)
     {
-        $update = Update::fromResponse($this->createSimpleUpdateWithText($request['text']));
+        $this::$testCount++;
+        $checkLocale = false;
+
+        $text = $request['text'];
+        if ($text === 'en') {
+            $text = ['ru', 'en'][\random_int(0,1)];
+            $checkLocale = true;
+        }
+
+        $update = Update::fromResponse($this->createSimpleUpdateWithText($text));
 
         $message = $this->main->run($update);
 
         $this->assertEquals($response, $this->prepareResponse($message));
+
+        if ($checkLocale) {
+            $user = $this->userRepository->find(self::FIRST_USER_ID);
+            $this->assertInstanceOf(User::class, $user);
+            $this->assertEquals($text, $user->getRealLocale());
+        }
     }
 
 
@@ -95,36 +125,9 @@ class MainTest extends KernelTestCase
                 'response' => [
                     'text' => 'hello',
                     'buttons' => [
-                        'Change language',
-                        'Cancel',
+                        'change_locale',
+                        CancelController::COMMAND_NAME,
                     ],
-                    'buttonsType' => 'simple',
-                ],
-            ],
-            [
-                'request' => [
-                    'text' => 'Change language',
-                ],
-                'response' => [
-                    'text' => 'Please choose locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                    ],
-                    'buttonsType' => 'simple',
-                ],
-            ],
-            [
-                'request' => [
-                    'text' => 'Change language',
-                ],
-                'response' => [
-                    'text' => 'Invalid locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                    ],
-                    'buttonsType' => 'simple',
                 ],
             ],
             [
@@ -132,38 +135,83 @@ class MainTest extends KernelTestCase
                     'text' => 'change_locale',
                 ],
                 'response' => [
+                    'text' => 'change_locale',
+                    'buttons' => [
+                        'en',
+                        'ru',
+                        CancelController::COMMAND_NAME,
+                    ],
+                ],
+            ],
+            [
+                'request' => [
+                    'text' => 'invalid_locale',
+                ],
+                'response' => [
                     'text' => 'invalid_locale',
                     'buttons' => [
                         'en',
                         'ru',
+                        CancelController::COMMAND_NAME,
                     ],
-                    'buttonsType' => 'simple',
+                ],
+            ],
+            [
+                'request' => [
+                    'text' => 'en',
+                ],
+                'response' => [
+                    'text' => 'success_change_locale',
+                    'buttons' => [
+                        'change_locale',
+                        CancelController::COMMAND_NAME,
+                    ],
+                ],
+            ],
+            [
+                'request' => [
+                    'text' => 'change_locale',
+                ],
+                'response' => [
+                    'text' => 'change_locale',
+                    'buttons' => [
+                        'en',
+                        'ru',
+                        CancelController::COMMAND_NAME,
+                    ],
+                ],
+            ],
+            [
+                'request' => [
+                    'text' => 'cancel',
+                ],
+                'response' => [
+                    'text' => 'cancel',
+                    'buttons' => [
+                        'change_locale',
+                        CancelController::COMMAND_NAME,
+                    ],
                 ],
             ],
         ];
     }
 
-    private function prepareResponse(ReplyMessage $message)
+    private function prepareResponse(ClearReplyMessage $message)
     {
         $result = [
             'text' => $message->getText(),
         ];
 
-        $markup = $message->getReplyMarkup();
-        if ($markup instanceof ReplyKeyboardMarkup) {
-
-            $result['buttons'] = $this->parseResponseKeyboard($markup);
-            $result['buttonsType'] = 'simple';
-        }
+        $result['buttons'] = $this->parseResponseKeyboard($message->getButtons());
 
         return $result;
     }
 
-    private function parseResponseKeyboard(ReplyKeyboardMarkup $markup)
+    private function parseResponseKeyboard(array $rows)
     {
         $result = [];
 
-        foreach ($markup->getKeyboard() as $row) {
+        foreach ($rows as $row) {
             foreach ($row as $col) {
                 $result[] = $col['text'];
             }
