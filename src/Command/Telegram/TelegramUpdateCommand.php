@@ -66,6 +66,7 @@ class TelegramUpdateCommand extends Command
                 $count++;
                 $lastUpdateId = $update->getUpdateId();
                 $this->io->text(sprintf('Iteration=%d UpdateId=%d MessageId=%d', $count, $lastUpdateId, $update->getMessage()->getMessageId()));
+
                 $replyMessage = $this->handler->handleUpdate($update);
                 $this->api->sendMessage($replyMessage);
                 if ($this->shouldStop) {

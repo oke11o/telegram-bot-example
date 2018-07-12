@@ -36,6 +36,20 @@ class SellHandler extends AbstractHandler implements TelegramUpdateHandlerInterf
         $chatId = $update->getMessage()->getChat()->getId();
         $text = 'sell_eth';
 
+        $coin = $this->coinRepository->findOneBySymbol('ETH');
+
+//        $requestData = [
+//            'coinWallet' => $stepData['coin_wallet'],
+//            'fiatWallet' => $stepData['ym_wallet'],
+//            'volume' => $stepData['eth_amount'],
+//            'currency' => 'rub',
+//            'coin' => ($coin ? $coin->getId() : null),
+//            'paymentSystem' => ($paymentSystem ? $paymentSystem->getId() : null),
+//            'type' => ParticipantTypeEnum::SELLER,
+//        ];
+//
+//        $participant = $this->participantAction->create($requestData, $user);
+
 
         return new HandleResponse($this->factory->create($chatId, $text, $buttons, $user->getRealLocale()));
     }
