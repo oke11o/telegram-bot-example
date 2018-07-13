@@ -8,10 +8,15 @@ class State
      * @var string
      */
     private $commandName;
+    /**
+     * @var string
+     */
+    private $action;
 
-    public function __construct(string $commandName)
+    public function __construct(string $commandName, string $action)
     {
         $this->commandName = $commandName;
+        $this->action = $action;
     }
 
     /**
@@ -22,5 +27,11 @@ class State
         return $this->commandName;
     }
 
-
+    /**
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
 }

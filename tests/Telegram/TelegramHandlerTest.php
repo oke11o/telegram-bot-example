@@ -41,7 +41,7 @@ class TelegramHandlerTest extends KernelTestCase
 
         $message = $this->handler->handleUpdate($update);
 
-        $this->assertEquals($message->getText(), 'Сменить язык');
+        $this->assertEquals($message->getText(), 'change_locale');
     }
 
 
@@ -55,7 +55,7 @@ class TelegramHandlerTest extends KernelTestCase
                         'message_id' => 296,
                         'from' =>
                             [
-                                'id' => 120500956,
+                                'id' => 3333333,
                                 'is_bot' => false,
                                 'first_name' => 'Sergey',
                                 'last_name' => 'Bevzenko',

@@ -24,10 +24,20 @@ class CreateParticipantController implements TelegramControllerInterface
 
     public function index(Arguments $arguments, State $state, User $user): Response
     {
-        $message = new ClearReplyMessage($arguments->getChatId(), self::COMMAND_NAME, $this->getButtons());
+        $message = new ClearReplyMessage($arguments->getChatId(), 'text.your.ym.wallet', $this->getOneCancelButtons());
 
-        $newState = $this->stateFactory->createParticipantState(self::COMMAND_NAME);
+        $newState = $this->stateFactory->create(self::COMMAND_NAME);
 
         return new Response($message, $newState);
+    }
+
+
+    private function getOneCancelButtons()
+    {
+        return [
+            [
+                ['text' => CancelController::COMMAND_NAME],
+            ],
+        ];
     }
 }

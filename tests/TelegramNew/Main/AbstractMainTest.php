@@ -101,28 +101,4 @@ abstract class AbstractMainTest extends KernelTestCase
             ],
         ];
     }
-
-    protected function prepareResponse(ClearReplyMessage $message)
-    {
-        $result = [
-            'text' => $message->getText(),
-        ];
-
-        $result['buttons'] = $this->parseResponseKeyboard($message->getButtons());
-
-        return $result;
-    }
-
-    private function parseResponseKeyboard(array $rows)
-    {
-        $result = [];
-
-        foreach ($rows as $row) {
-            foreach ($row as $col) {
-                $result[] = $col['text'];
-            }
-        }
-
-        return $result;
-    }
 }

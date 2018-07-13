@@ -38,7 +38,7 @@ class RequestFactory implements ServiceSubscriberInterface
                 $controller = $this->container->get(ChangeLocaleController::class);
                 $actionName = 'chooseLocale';
             }
-        } elseif($state->getCommandName() === CreateParticipantController::COMMAND_NAME) {
+        } elseif ($text === CreateParticipantController::COMMAND_NAME) {
             if ($text === CancelController::COMMAND_NAME) {
                 $controller = $this->container->get(CancelController::class);
                 $actionName = 'cancel';
@@ -58,13 +58,13 @@ class RequestFactory implements ServiceSubscriberInterface
     /**
      * @return array The required service types, optionally keyed by service names
      */
-    public
-    static function getSubscribedServices()
+    public static function getSubscribedServices()
     {
         return [
             HomeController::class,
             ChangeLocaleController::class,
             CancelController::class,
+            CreateParticipantController::class,
         ];
     }
 }
