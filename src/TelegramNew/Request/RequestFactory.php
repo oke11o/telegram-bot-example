@@ -5,8 +5,9 @@ namespace App\TelegramNew\Request;
 use App\Entity\User;
 use App\TelegramNew\Controller\CancelController;
 use App\TelegramNew\Controller\ChangeLocaleController;
+use App\TelegramNew\Controller\CreateParticipantController;
 use App\TelegramNew\Controller\HomeController;
-use App\TelegramNew\State;
+use App\TelegramNew\State\State;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
 use TelegramBot\Api\Types\Update;
@@ -23,9 +24,9 @@ class RequestFactory implements ServiceSubscriberInterface
         $this->container = $container;
     }
 
-    public function create(string $text, State $state): Request
+    public function create(int $chatId, string $text, State $state): Request
     {
-        $arguments = new Arguments($text);
+        $arguments = new Arguments($chatId, $text);
         if ($text === ChangeLocaleController::COMMAND_NAME) {
             $controller = $this->container->get(ChangeLocaleController::class);
             $actionName = 'index';
@@ -36,6 +37,14 @@ class RequestFactory implements ServiceSubscriberInterface
             } else {
                 $controller = $this->container->get(ChangeLocaleController::class);
                 $actionName = 'chooseLocale';
+            }
+        } elseif($state->getCommandName() === CreateParticipantController::COMMAND_NAME) {
+            if ($text === CancelController::COMMAND_NAME) {
+                $controller = $this->container->get(CancelController::class);
+                $actionName = 'cancel';
+            } else {
+                $controller = $this->container->get(CreateParticipantController::class);
+                $actionName = 'index';
             }
         } else {
             $controller = $this->container->get(HomeController::class);

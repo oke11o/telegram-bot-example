@@ -90,7 +90,7 @@ class Main
         $state = $this->telegramStateManager->getState($user);
 
         /** @var Request $request */
-        $request = $this->requestFactory->create($update->getMessage()->getText(), $state);
+        $request = $this->requestFactory->create($update->getMessage()->getChat()->getId(), $update->getMessage()->getText(), $state);
 
 
         /** @var Response $response */
@@ -116,11 +116,11 @@ class Main
 //
 //        return $this->replyMessageFactory->create($chatId, $text, $buttons, $user->getRealLocale());
     }
-
-    public function translateClearReplayMessage(ClearReplyMessage $clearReplyMessage): ReplyMessage
-    {
-        return new ReplyMessage();
-    }
+//
+//    public function translateClearReplayMessage(ClearReplyMessage $clearReplyMessage): ReplyMessage
+//    {
+//        return new ReplyMessage();
+//    }
 
     /**
      * @param User $user

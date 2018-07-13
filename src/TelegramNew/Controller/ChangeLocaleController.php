@@ -6,12 +6,12 @@ use App\Entity\User;
 use App\TelegramNew\Request\Arguments;
 use App\TelegramNew\Response\ClearReplyMessage;
 use App\TelegramNew\Response\Response;
-use App\TelegramNew\State;
+use App\TelegramNew\State\State;
 use App\TelegramNew\StateFactory;
 
 class ChangeLocaleController implements TelegramControllerInterface
 {
-    public const COMMAND_NAME = 'change_locale';
+    public const COMMAND_NAME = 'change.locale';
     /**
      * @var StateFactory
      */
@@ -24,7 +24,7 @@ class ChangeLocaleController implements TelegramControllerInterface
 
     public function index(Arguments $arguments, State $state, User $user): Response
     {
-        $message = new ClearReplyMessage(self::COMMAND_NAME, $this->getButtons());
+        $message = new ClearReplyMessage($arguments->getChatId(), self::COMMAND_NAME, $this->getButtons());
 
         $newState = $this->stateFactory->create(self::COMMAND_NAME);
 
@@ -37,15 +37,15 @@ class ChangeLocaleController implements TelegramControllerInterface
         if (\in_array($text, ['en', 'ru'])) { //validation
             $user->setLocale($text);
 
-            $text = 'success_change_locale';
-            $message = new ClearReplyMessage($text, HomeController::getDefaultButtons());
+            $text = 'success.change.locale';
+            $message = new ClearReplyMessage($arguments->getChatId(), $text, HomeController::getDefaultButtons());
             $newState = $this->stateFactory->create(HomeController::COMMAND_NAME);
 
             return new Response($message, $newState);
         }
 
-        $validationErrorMessage = 'invalid_locale';
-        $message = new ClearReplyMessage($validationErrorMessage, $this->getButtons());
+        $validationErrorMessage = 'invalid.locale';
+        $message = new ClearReplyMessage($arguments->getChatId(), $validationErrorMessage, $this->getButtons());
         $newState = $this->stateFactory->create(self::COMMAND_NAME);
 
         return new Response($message, $newState);
@@ -64,8 +64,6 @@ class ChangeLocaleController implements TelegramControllerInterface
                 [
                     'text' => 'ru',
                 ],
-            ],
-            [
                 [
                     'text' => CancelController::COMMAND_NAME,
                 ],

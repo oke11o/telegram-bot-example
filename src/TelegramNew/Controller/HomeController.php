@@ -6,7 +6,7 @@ use App\Entity\User;
 use App\TelegramNew\Request\Arguments;
 use App\TelegramNew\Response\ClearReplyMessage;
 use App\TelegramNew\Response\Response;
-use App\TelegramNew\State;
+use App\TelegramNew\State\State;
 
 class HomeController implements TelegramControllerInterface
 {
@@ -20,7 +20,7 @@ class HomeController implements TelegramControllerInterface
      */
     public function index(Arguments $arguments, State $state, User $user): Response
     {
-        $message = new ClearReplyMessage(self::COMMAND_NAME, self::getDefaultButtons());
+        $message = new ClearReplyMessage($arguments->getChatId(), self::COMMAND_NAME, self::getDefaultButtons());
 
         return new Response($message, $state);
     }
@@ -34,6 +34,9 @@ class HomeController implements TelegramControllerInterface
             [
                 [
                     'text' => ChangeLocaleController::COMMAND_NAME,
+                ],
+                [
+                    'text' => CreateParticipantController::COMMAND_NAME,
                 ],
                 [
                     'text' => CancelController::COMMAND_NAME,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\TelegramNew;
+namespace App\TelegramNew\State;
 
 class State
 {

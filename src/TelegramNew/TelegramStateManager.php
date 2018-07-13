@@ -3,6 +3,7 @@
 namespace App\TelegramNew;
 
 use App\Entity\User;
+use App\TelegramNew\State\State;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class TelegramStateManager

@@ -4,6 +4,9 @@ namespace App\Tests\TelegramNew\Main;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use App\TelegramNew\Controller\CancelController;
+use App\TelegramNew\Controller\ChangeLocaleController;
+use App\TelegramNew\Controller\CreateParticipantController;
 use App\TelegramNew\Main;
 use App\TelegramNew\Response\ClearReplyMessage;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,6 +16,7 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 abstract class AbstractMainTest extends KernelTestCase
 {
     protected const FIRST_USER_ID = 1;
+    protected const CHAT_ID = 120500956;
 
     /**
      * @var Main
@@ -63,7 +67,7 @@ abstract class AbstractMainTest extends KernelTestCase
                     'message_id' => 296,
                     'from' =>
                         [
-                            'id' => 120500956,
+                            'id' => self::CHAT_ID,
                             'is_bot' => false,
                             'first_name' => 'Sergey',
                             'last_name' => 'Bevzenko',
@@ -72,7 +76,7 @@ abstract class AbstractMainTest extends KernelTestCase
                         ],
                     'chat' =>
                         [
-                            'id' => 120500956,
+                            'id' => self::CHAT_ID,
                             'first_name' => 'Sergey',
                             'last_name' => 'Bevzenko',
                             'username' => 'oke11o',
@@ -81,6 +85,20 @@ abstract class AbstractMainTest extends KernelTestCase
                     'date' => 1531140851,
                     'text' => $text,
                 ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    protected function defaultButtons(): array
+    {
+        return [
+            [
+                ['text' => ChangeLocaleController::COMMAND_NAME],
+                ['text' => CreateParticipantController::COMMAND_NAME],
+                ['text' => CancelController::COMMAND_NAME],
+            ],
         ];
     }
 

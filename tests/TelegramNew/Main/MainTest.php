@@ -6,15 +6,15 @@ use App\Entity\User;
 use App\TelegramNew\Controller\CancelController;
 use TelegramBot\Api\Types\Update;
 
-class MainCreateTest extends AbstractMainTest
+class MainTest extends AbstractMainTest
 {
     private static $testCount = 0;
 
     /**
      * @test
-     * @dataProvider createExamples
+     * @dataProvider createChangeLocaleChain
      */
-    public function create($request, $response)
+    public function changeLocaleChain($request, $response)
     {
         $this::$testCount++;
         $checkLocale = false;
@@ -29,7 +29,7 @@ class MainCreateTest extends AbstractMainTest
 
         $message = $this->main->run($update);
 
-        $this->assertEquals($response, $this->prepareResponse($message));
+        $this->assertEquals($response, $message->jsonSerialize());
 
         if ($checkLocale) {
             $user = $this->userRepository->find(self::FIRST_USER_ID);
@@ -38,7 +38,7 @@ class MainCreateTest extends AbstractMainTest
         }
     }
 
-    public function createExamples()
+    public function createChangeLocaleChain()
     {
         return [
             [
@@ -46,34 +46,29 @@ class MainCreateTest extends AbstractMainTest
                     'text' => 'start',
                 ],
                 'response' => [
+                    'chatId' => self::CHAT_ID,
                     'text' => 'hello',
                     'buttons' => $this->defaultButtons(),
                 ],
             ],
             [
                 'request' => [
-                    'text' => 'change_locale',
+                    'text' => 'change.locale',
                 ],
                 'response' => [
-                    'text' => 'change_locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                        CancelController::COMMAND_NAME,
-                    ],
+                    'chatId' => self::CHAT_ID,
+                    'text' => 'change.locale',
+                    'buttons' => $this->getThisButtons(),
                 ],
             ],
             [
                 'request' => [
-                    'text' => 'invalid_locale',
+                    'text' => 'invalid.locale',
                 ],
                 'response' => [
-                    'text' => 'invalid_locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                        CancelController::COMMAND_NAME,
-                    ],
+                    'chatId' => self::CHAT_ID,
+                    'text' => 'invalid.locale',
+                    'buttons' => $this->getThisButtons(),
                 ],
             ],
             [
@@ -81,21 +76,19 @@ class MainCreateTest extends AbstractMainTest
                     'text' => 'en',
                 ],
                 'response' => [
-                    'text' => 'success_change_locale',
+                    'chatId' => self::CHAT_ID,
+                    'text' => 'success.change.locale',
                     'buttons' => $this->defaultButtons(),
                 ],
             ],
             [
                 'request' => [
-                    'text' => 'change_locale',
+                    'text' => 'change.locale',
                 ],
                 'response' => [
-                    'text' => 'change_locale',
-                    'buttons' => [
-                        'en',
-                        'ru',
-                        CancelController::COMMAND_NAME,
-                    ],
+                    'chatId' => self::CHAT_ID,
+                    'text' => 'change.locale',
+                    'buttons' => $this->getThisButtons(),
                 ],
             ],
             [
@@ -103,9 +96,24 @@ class MainCreateTest extends AbstractMainTest
                     'text' => 'cancel',
                 ],
                 'response' => [
+                    'chatId' => self::CHAT_ID,
                     'text' => 'cancel',
                     'buttons' => $this->defaultButtons(),
                 ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    private function getThisButtons(): array
+    {
+        return [
+            [
+                ['text' => 'en'],
+                ['text' => 'ru'],
+                ['text' => CancelController::COMMAND_NAME],
             ],
         ];
     }

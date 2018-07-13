@@ -3,7 +3,7 @@
 namespace App\TelegramNew\Response;
 
 use App\Telegram\Type\ReplyMessage;
-use App\TelegramNew\State;
+use App\TelegramNew\State\State;
 
 class Response
 {

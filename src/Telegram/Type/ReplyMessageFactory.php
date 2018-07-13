@@ -2,8 +2,10 @@
 
 namespace App\Telegram\Type;
 
+use App\TelegramNew\Response\ClearReplyMessage;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use TelegramBot\Api\Types\ReplyKeyboardMarkup;
 
 class ReplyMessageFactory
 {
@@ -22,11 +24,16 @@ class ReplyMessageFactory
         $this->logger = $logger;
     }
 
+    public function createFromClearMessage(ClearReplyMessage $clear)
+    {
+        return $this->create($clear->getChatId(), $clear->getText(), new ReplyKeyboardMarkup($clear->getButtons()));
+    }
+
     public function create($chatId, $text, $replyMarkup = null, $locale = 'en')
     {
         $parseMode = 'markdown';
         try {
-            $text = $this->translator->trans($text, [], null, $locale);
+//            $text = $this->translator->trans($text, [], null, $locale);
         } catch (\Symfony\Component\Translation\Exception\InvalidArgumentException $e) {
             $this->logger->warning($e->getMessage());
         }

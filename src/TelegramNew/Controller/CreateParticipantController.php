@@ -9,9 +9,9 @@ use App\TelegramNew\Response\Response;
 use App\TelegramNew\State\State;
 use App\TelegramNew\StateFactory;
 
-class CancelController implements TelegramControllerInterface
+class CreateParticipantController implements TelegramControllerInterface
 {
-    public const COMMAND_NAME = 'cancel';
+    public const COMMAND_NAME = 'create.participant';
     /**
      * @var StateFactory
      */
@@ -22,13 +22,12 @@ class CancelController implements TelegramControllerInterface
         $this->stateFactory = $stateFactory;
     }
 
-    public function cancel(Arguments $arguments, State $state, User $user): Response
+    public function index(Arguments $arguments, State $state, User $user): Response
     {
-        $message = new ClearReplyMessage($arguments->getChatId(), self::COMMAND_NAME, HomeController::getDefaultButtons());
+        $message = new ClearReplyMessage($arguments->getChatId(), self::COMMAND_NAME, $this->getButtons());
 
-        $newState = $this->stateFactory->create(HomeController::COMMAND_NAME);
+        $newState = $this->stateFactory->createParticipantState(self::COMMAND_NAME);
 
         return new Response($message, $newState);
     }
-
 }
