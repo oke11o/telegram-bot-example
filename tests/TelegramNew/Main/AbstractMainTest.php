@@ -8,15 +8,15 @@ use App\TelegramNew\Controller\CancelController;
 use App\TelegramNew\Controller\ChangeLocaleController;
 use App\TelegramNew\Controller\CreateParticipantController;
 use App\TelegramNew\Main;
-use App\TelegramNew\Response\ClearReplyMessage;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 abstract class AbstractMainTest extends KernelTestCase
 {
     protected const TELEGRAM_USER_ID = 121212121;
-    protected const FIRST_USER_ID = 1;
+    protected const FIRST_USER_ID = 2;
     protected const CHAT_ID = 120500956;
 
     /**
@@ -32,8 +32,6 @@ abstract class AbstractMainTest extends KernelTestCase
      */
     protected $userRepository;
 
-    protected static $needPurgeClear = true;
-
     public function setUp()
     {
         self::bootKernel();
@@ -42,20 +40,6 @@ abstract class AbstractMainTest extends KernelTestCase
         $this->main = $container->get(Main::class);
         $this->em = $container->get(EntityManagerInterface::class);
         $this->userRepository = $this->em->getRepository(User::class);
-
-        if (self::$needPurgeClear) {
-            self::$needPurgeClear = false;
-
-            $cache = $container->get(AdapterInterface::class);
-            $keys = [
-                'current_user_state_'.self::FIRST_USER_ID, //TODO: hardcode. Need fix with fixtures
-            ];
-            foreach ($keys as $key) {
-                if ($cache->hasItem($key)) {
-                    $cache->deleteItem($key);
-                }
-            }
-        }
     }
 
 
@@ -101,5 +85,21 @@ abstract class AbstractMainTest extends KernelTestCase
                 ['text' => CancelController::COMMAND_NAME],
             ],
         ];
+    }
+
+    /**
+     * @param $container
+     */
+    protected function cacheClear(ContainerInterface $container): void
+    {
+        $cache = $container->get(AdapterInterface::class);
+        $keys = [
+            'current_user_state_'.self::FIRST_USER_ID, //TODO: hardcode. Need fix with fixtures
+        ];
+        foreach ($keys as $key) {
+            if ($cache->hasItem($key)) {
+                $cache->deleteItem($key);
+            }
+        }
     }
 }

@@ -27,10 +27,16 @@ class RequestFactory implements ServiceSubscriberInterface
     public function create(int $chatId, string $text, State $state): Request
     {
         $arguments = new Arguments($chatId, $text);
+        $controllerName = $state->getCommandName();
+
         if ($text === ChangeLocaleController::COMMAND_NAME) {
             $controller = $this->container->get(ChangeLocaleController::class);
             $actionName = 'index';
-        } elseif ($state->getCommandName() === ChangeLocaleController::COMMAND_NAME) {
+
+            return new Request($controller, $actionName, $arguments);
+        }
+
+        if ($controllerName === ChangeLocaleController::COMMAND_NAME) {
             if ($text === CancelController::COMMAND_NAME) {
                 $controller = $this->container->get(CancelController::class);
                 $actionName = 'cancel';
@@ -38,19 +44,31 @@ class RequestFactory implements ServiceSubscriberInterface
                 $controller = $this->container->get(ChangeLocaleController::class);
                 $actionName = 'chooseLocale';
             }
-        } elseif ($text === CreateParticipantController::COMMAND_NAME) {
+
+            return new Request($controller, $actionName, $arguments);
+        }
+
+        if ($text === CreateParticipantController::COMMAND_NAME) {
+            $controller = $this->container->get(CreateParticipantController::class);
+            $actionName = 'index';
+
+            return new Request($controller, $actionName, $arguments);
+        }
+
+        if ($controllerName === CreateParticipantController::COMMAND_NAME) {
             if ($text === CancelController::COMMAND_NAME) {
                 $controller = $this->container->get(CancelController::class);
                 $actionName = 'cancel';
             } else {
                 $controller = $this->container->get(CreateParticipantController::class);
-                $actionName = 'index';
+                $actionName = $state->getAction();
             }
-        } else {
-            $controller = $this->container->get(HomeController::class);
-            $actionName = 'index';
+
+            return new Request($controller, $actionName, $arguments);
         }
 
+        $controller = $this->container->get(HomeController::class);
+        $actionName = 'index';
 
         return new Request($controller, $actionName, $arguments);
     }

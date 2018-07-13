@@ -9,6 +9,19 @@ use TelegramBot\Api\Types\Update;
 class MainTest extends AbstractMainTest
 {
     private static $testCount = 0;
+    private static $needPurgeClear = true;
+
+    public function setUp()
+    {
+        parent::setUp();
+        $container = self::$container;
+
+        if (self::$needPurgeClear) {
+            self::$needPurgeClear = false;
+
+            $this->cacheClear($container);
+        }
+    }
 
     /**
      * @test
