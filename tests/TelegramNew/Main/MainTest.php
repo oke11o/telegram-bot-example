@@ -32,7 +32,7 @@ class MainTest extends AbstractMainTest
         $this->assertEquals($response, $message->jsonSerialize());
 
         if ($checkLocale) {
-            $user = $this->userRepository->find(self::FIRST_USER_ID);
+            $user = $this->userRepository->findByTelegramId(self::TELEGRAM_USER_ID);
             $this->assertInstanceOf(User::class, $user);
             $this->assertEquals($text, $user->getRealLocale());
         }

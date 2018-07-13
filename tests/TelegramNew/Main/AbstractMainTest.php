@@ -15,6 +15,7 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 abstract class AbstractMainTest extends KernelTestCase
 {
+    protected const TELEGRAM_USER_ID = 121212121;
     protected const FIRST_USER_ID = 1;
     protected const CHAT_ID = 120500956;
 
@@ -67,7 +68,7 @@ abstract class AbstractMainTest extends KernelTestCase
                     'message_id' => 296,
                     'from' =>
                         [
-                            'id' => self::CHAT_ID,
+                            'id' => self::TELEGRAM_USER_ID,
                             'is_bot' => false,
                             'first_name' => 'Sergey',
                             'last_name' => 'Bevzenko',

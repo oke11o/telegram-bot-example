@@ -9,6 +9,10 @@ use Symfony\Component\Cache\Adapter\AdapterInterface;
 
 class TelegramHandlerTest extends KernelTestCase
 {
+    protected const TELEGRAM_USER_ID = 42324234223;
+    protected const FIRST_USER_ID = 1;
+    protected const CHAT_ID = 120500956;
+
     /**
      * @var TelegramHandler
      */
@@ -55,7 +59,7 @@ class TelegramHandlerTest extends KernelTestCase
                         'message_id' => 296,
                         'from' =>
                             [
-                                'id' => 3333333,
+                                'id' => self::TELEGRAM_USER_ID,
                                 'is_bot' => false,
                                 'first_name' => 'Sergey',
                                 'last_name' => 'Bevzenko',
@@ -64,7 +68,7 @@ class TelegramHandlerTest extends KernelTestCase
                             ],
                         'chat' =>
                             [
-                                'id' => 120500956,
+                                'id' => self::CHAT_ID,
                                 'first_name' => 'Sergey',
                                 'last_name' => 'Bevzenko',
                                 'username' => 'oke11o',
