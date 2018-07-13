@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\TelegramNew;
+namespace App\Tests\TelegramNew\Main;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
@@ -12,7 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
 use TelegramBot\Api\Types\Update;
 use Symfony\Component\Cache\Adapter\AdapterInterface;
 
-class MainTest extends KernelTestCase
+class MainCreateTest extends KernelTestCase
 {
     private const FIRST_USER_ID = 1;
 

@@ -41,7 +41,7 @@ class TelegramHandlerTest extends KernelTestCase
 
         $message = $this->handler->handleUpdate($update);
 
-        $this->assertEquals($message->getText(), 'asdf');
+        $this->assertEquals($message->getText(), 'Сменить язык');
     }
 
 
