@@ -4,6 +4,9 @@ namespace App\TelegramNew\Response;
 
 class ClearReplyMessage implements \JsonSerializable
 {
+    public const BUTTON_TYPE_SIMPLE = 'simple';
+    public const BUTTON_TYPE_INLINE = 'inline';
+
     /**
      * @var string
      */
@@ -16,12 +19,17 @@ class ClearReplyMessage implements \JsonSerializable
      * @var int
      */
     private $chatId;
+    /**
+     * @var string
+     */
+    private $buttonType;
 
-    public function __construct(int $chatId, string $text, array $buttons)
+    public function __construct(int $chatId, string $text, array $buttons, string $buttonType = self::BUTTON_TYPE_SIMPLE)
     {
         $this->chatId = $chatId;
         $this->text = $text;
         $this->buttons = $buttons;
+        $this->buttonType = $buttonType;
     }
 
     /**
@@ -49,6 +57,14 @@ class ClearReplyMessage implements \JsonSerializable
     }
 
     /**
+     * @return string
+     */
+    public function getButtonType(): string
+    {
+        return $this->buttonType;
+    }
+
+    /**
      * @return array
      */
     public function jsonSerialize(): array
@@ -57,6 +73,7 @@ class ClearReplyMessage implements \JsonSerializable
             'chatId' => $this->getChatId(),
             'text' => $this->getText(),
             'buttons' => $this->getButtons(),
+            'buttonType' => $this->getButtonType(),
         ];
     }
 }

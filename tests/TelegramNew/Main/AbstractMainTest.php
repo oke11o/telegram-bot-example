@@ -7,6 +7,7 @@ use App\Repository\UserRepository;
 use App\TelegramNew\Controller\CancelController;
 use App\TelegramNew\Controller\ChangeLocaleController;
 use App\TelegramNew\Controller\CreateParticipantController;
+use App\TelegramNew\Controller\MyParticipantController;
 use App\TelegramNew\Main;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
@@ -16,7 +17,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 abstract class AbstractMainTest extends KernelTestCase
 {
     protected const TELEGRAM_USER_ID = 121212121;
-    protected const FIRST_USER_ID = 2;
+    protected const FIRST_USER_ID = 1;
     protected const CHAT_ID = 120500956;
 
     /**
@@ -40,6 +41,8 @@ abstract class AbstractMainTest extends KernelTestCase
         $this->main = $container->get(Main::class);
         $this->em = $container->get(EntityManagerInterface::class);
         $this->userRepository = $this->em->getRepository(User::class);
+
+        parent::setUp();
     }
 
 
@@ -81,6 +84,7 @@ abstract class AbstractMainTest extends KernelTestCase
         return [
             [
                 ['text' => ChangeLocaleController::COMMAND_NAME],
+                ['text' => MyParticipantController::COMMAND_NAME],
                 ['text' => CreateParticipantController::COMMAND_NAME],
                 ['text' => CancelController::COMMAND_NAME],
             ],
@@ -93,12 +97,14 @@ abstract class AbstractMainTest extends KernelTestCase
     protected function cacheClear(ContainerInterface $container): void
     {
         $cache = $container->get(AdapterInterface::class);
-        $keys = [
-            'current_user_state_'.self::FIRST_USER_ID, //TODO: hardcode. Need fix with fixtures
-        ];
-        foreach ($keys as $key) {
-            if ($cache->hasItem($key)) {
-                $cache->deleteItem($key);
+        for ($i = 1; $i < 100; $i++){
+            $keys = [
+                'current_user_state_'.$i, //TODO: hardcode. Need fix with fixtures
+            ];
+            foreach ($keys as $key) {
+                if ($cache->hasItem($key)) {
+                    $cache->deleteItem($key);
+                }
             }
         }
     }

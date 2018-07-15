@@ -54,7 +54,7 @@ class TelegramHandler implements ServiceSubscriberInterface
      */
     public function handleUpdate(Update $update): ReplyMessage
     {
-        $user = $this->userManager->receiveUser($update);
+        $user = $this->userManager->receiveUser($update->getMessage());
         $state = $this->currentUserState($user);
 
         $updateHandler = $this->resolveUpdateHandler($update, $user, $state);

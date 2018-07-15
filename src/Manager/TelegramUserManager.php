@@ -3,8 +3,8 @@
 namespace App\Manager;
 
 use App\Entity\User;
-use App\Manager\UserManager;
 use Doctrine\ORM\EntityManagerInterface;
+use TelegramBot\Api\Types\Message;
 use TelegramBot\Api\Types\Update;
 
 class TelegramUserManager
@@ -26,18 +26,18 @@ class TelegramUserManager
     }
 
     /**
-     * @param Update $update
+     * @param Message $message
      * @return User $user
      */
-    public function receiveUser(Update $update): User
+    public function receiveUser(Message $message): User
     {
-        $telegramUser = $update->getMessage()->getFrom();
+        $telegramUser = $message->getFrom();
         $user = $this->userManager->receiveUserByTelegramId($telegramUser->getId());
         if (!$user) {
             $user = $this->userManager->createUserByTelegramUser($telegramUser);
         }
 
-        $chatId = $update->getMessage()->getChat()->getId();
+        $chatId = $message->getChat()->getId();
         if ($chatId !== $user->getLastTelegramChatId()) {
             $user->addTelegramChatId($chatId);
         }

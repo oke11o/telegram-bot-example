@@ -5,6 +5,7 @@ namespace App\Telegram\Type;
 use App\TelegramNew\Response\ClearReplyMessage;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 use TelegramBot\Api\Types\ReplyKeyboardMarkup;
 
 class ReplyMessageFactory
@@ -26,7 +27,13 @@ class ReplyMessageFactory
 
     public function createFromClearMessage(ClearReplyMessage $clear)
     {
-        return $this->create($clear->getChatId(), $clear->getText(), new ReplyKeyboardMarkup($clear->getButtons()));
+        if ($clear->getButtonType() === ClearReplyMessage::BUTTON_TYPE_INLINE) {
+            $replyKeyboardMarkup = new InlineKeyboardMarkup($clear->getButtons());
+        } else {
+            $replyKeyboardMarkup = new ReplyKeyboardMarkup($clear->getButtons());
+        }
+
+        return $this->create($clear->getChatId(), $clear->getText(), $replyKeyboardMarkup);
     }
 
     public function create($chatId, $text, $replyMarkup = null, $locale = 'en')

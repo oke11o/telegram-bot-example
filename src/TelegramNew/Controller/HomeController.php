@@ -36,6 +36,9 @@ class HomeController implements TelegramControllerInterface
                     'text' => ChangeLocaleController::COMMAND_NAME,
                 ],
                 [
+                    'text' => MyParticipantController::COMMAND_NAME,
+                ],
+                [
                     'text' => CreateParticipantController::COMMAND_NAME,
                 ],
                 [

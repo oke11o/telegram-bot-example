@@ -7,6 +7,7 @@ use App\TelegramNew\Controller\CancelController;
 use App\TelegramNew\Controller\ChangeLocaleController;
 use App\TelegramNew\Controller\CreateParticipantController;
 use App\TelegramNew\Controller\HomeController;
+use App\TelegramNew\Controller\MyParticipantController;
 use App\TelegramNew\State\State;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
@@ -67,6 +68,26 @@ class RequestFactory implements ServiceSubscriberInterface
             return new Request($controller, $actionName, $arguments);
         }
 
+
+        if ($text === MyParticipantController::COMMAND_NAME) {
+            $controller = $this->container->get(MyParticipantController::class);
+            $actionName = 'index';
+
+            return new Request($controller, $actionName, $arguments);
+        }
+
+        if ($controllerName === MyParticipantController::COMMAND_NAME) {
+            if ($text === MyParticipantController::COMMAND_NAME) {
+                $controller = $this->container->get(CancelController::class);
+                $actionName = 'cancel';
+            } else {
+                $controller = $this->container->get(MyParticipantController::class);
+                $actionName = $state->getAction();
+            }
+
+            return new Request($controller, $actionName, $arguments);
+        }
+
         $controller = $this->container->get(HomeController::class);
         $actionName = 'index';
 
@@ -83,6 +104,7 @@ class RequestFactory implements ServiceSubscriberInterface
             ChangeLocaleController::class,
             CancelController::class,
             CreateParticipantController::class,
+            MyParticipantController::class,
         ];
     }
 }

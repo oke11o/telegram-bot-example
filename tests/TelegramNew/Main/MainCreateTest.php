@@ -51,6 +51,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'hello',
                     'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -61,6 +62,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'text.your.ym.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -71,6 +73,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'cancel',
                     'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -81,6 +84,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'text.your.ym.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -91,6 +95,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'validation.text.your.ym.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -101,6 +106,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'validation.text.your.ym.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -111,6 +117,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'text.your.eth.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -121,6 +128,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'cancel',
                     'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -131,6 +139,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'text.your.ym.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -141,6 +150,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'text.your.eth.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -151,6 +161,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'validate.your.eth.wallet',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -161,6 +172,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'text.amount',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -171,6 +183,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'validate.amount',
                     'buttons' => $this->getOnlyCancelButton(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -186,6 +199,7 @@ class MainCreateTest extends AbstractMainTest
                             ['text' => 'no'],
                         ]
                     ],
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -196,6 +210,7 @@ class MainCreateTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'success.create.participant.1', //TODO: need check ID
                     'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
         ];

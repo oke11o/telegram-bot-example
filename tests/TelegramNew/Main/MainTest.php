@@ -62,6 +62,7 @@ class MainTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'hello',
                     'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -72,6 +73,7 @@ class MainTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'change.locale',
                     'buttons' => $this->getThisButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -82,6 +84,7 @@ class MainTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'invalid.locale',
                     'buttons' => $this->getThisButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -92,6 +95,7 @@ class MainTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'success.change.locale',
                     'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -102,6 +106,7 @@ class MainTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'change.locale',
                     'buttons' => $this->getThisButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
             [
@@ -112,6 +117,7 @@ class MainTest extends AbstractMainTest
                     'chatId' => self::CHAT_ID,
                     'text' => 'cancel',
                     'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
         ];

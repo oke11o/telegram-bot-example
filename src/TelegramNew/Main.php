@@ -84,13 +84,22 @@ class Main
      */
     public function run(Update $update): ClearReplyMessage
     {
-        $user = $this->userManager->receiveUser($update);
+        $message = $update->getMessage();
+        $callbackData = null;
+        if (!$message) {
+            $callback = $update->getCallbackQuery();
+            if ($callback) {
+                $message = $callback->getMessage();
+                $callbackData = $callback->getData();
+            }
+        }
+        $user = $this->userManager->receiveUser($message);
 
         // тут надо получить сессию. И проверить не просреченна ли она. Если нет - создать новую.
         $state = $this->telegramStateManager->getState($user);
 
         /** @var Request $request */
-        $request = $this->requestFactory->create($update->getMessage()->getChat()->getId(), $update->getMessage()->getText(), $state);
+        $request = $this->requestFactory->create($message->getChat()->getId(), $message->getText(), $state);
 
 
         /** @var Response $response */

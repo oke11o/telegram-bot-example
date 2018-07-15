@@ -71,7 +71,9 @@ class TelegramNewUpdateCommand extends Command
             foreach ($updates as $update) {
                 $count++;
                 $lastUpdateId = $update->getUpdateId();
-                $this->io->text(sprintf('Iteration=%d UpdateId=%d MessageId=%d', $count, $lastUpdateId, $update->getMessage()->getMessageId()));
+                $messageId = $update->getMessage() ? $update->getMessage()->getMessageId() : null;
+                $callbackId = $update->getCallbackQuery() ? $update->getCallbackQuery()->getId() : null;
+                $this->io->text(sprintf('Iteration=%d UpdateId=%d MessageId=%d', $count, $lastUpdateId, $messageId ?? $callbackId));
 
                 $clearReplyMessage = $this->main->run($update);
                 $replyMessage = $this->replyMessageFactory->createFromClearMessage($clearReplyMessage);
