@@ -26,18 +26,18 @@ class TelegramUserManager
     }
 
     /**
-     * @param Message $message
+     * @param \TelegramBot\Api\Types\User $from
+     * @param int $chatId
      * @return User $user
      */
-    public function receiveUser(Message $message): User
+    public function receiveUser(\TelegramBot\Api\Types\User $from, int $chatId): User
     {
-        $telegramUser = $message->getFrom();
+        $telegramUser = $from;
         $user = $this->userManager->receiveUserByTelegramId($telegramUser->getId());
         if (!$user) {
             $user = $this->userManager->createUserByTelegramUser($telegramUser);
         }
 
-        $chatId = $message->getChat()->getId();
         if ($chatId !== $user->getLastTelegramChatId()) {
             $user->addTelegramChatId($chatId);
         }

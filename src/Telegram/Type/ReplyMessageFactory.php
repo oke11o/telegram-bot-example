@@ -2,26 +2,20 @@
 
 namespace App\Telegram\Type;
 
-use App\TelegramNew\Response\ClearReplyMessage;
+use App\Telegram\Response\ClearReplyMessage;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Translation\TranslatorInterface;
 use TelegramBot\Api\Types\Inline\InlineKeyboardMarkup;
 use TelegramBot\Api\Types\ReplyKeyboardMarkup;
 
 class ReplyMessageFactory
 {
     /**
-     * @var TranslatorInterface
-     */
-    private $translator;
-    /**
      * @var LoggerInterface
      */
     private $logger;
 
-    public function __construct(TranslatorInterface $translator, LoggerInterface $logger)
+    public function __construct(LoggerInterface $logger)
     {
-        $this->translator = $translator;
         $this->logger = $logger;
     }
 

@@ -4,7 +4,7 @@ namespace App\Command\Telegram;
 
 use App\Telegram\TelegramBotApi;
 use App\Telegram\Type\ReplyMessageFactory;
-use App\TelegramNew\Main;
+use App\Telegram\Main;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;

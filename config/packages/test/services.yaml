@@ -2,5 +2,5 @@ services:
     _defaults:
         public: true
 
-    App\TelegramNew\Main:
+    App\Telegram\Main:
         public: true
