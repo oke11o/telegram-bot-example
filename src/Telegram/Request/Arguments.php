@@ -12,11 +12,16 @@ class Arguments
      * @var int
      */
     private $chatId;
+    /**
+     * @var string
+     */
+    private $callbackData;
 
-    public function __construct(int $chatId, string $text)
+    public function __construct(int $chatId, string $text, string $callbackData = null)
     {
         $this->text = $text;
         $this->chatId = $chatId;
+        $this->callbackData = $callbackData;
     }
 
     /**
@@ -35,5 +40,11 @@ class Arguments
         return $this->text;
     }
 
-
+    /**
+     * @return string
+     */
+    public function getCallbackData(): ?string
+    {
+        return $this->callbackData;
+    }
 }

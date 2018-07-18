@@ -94,7 +94,7 @@ class Main
         $state = $this->telegramStateManager->getState($user);
 
         /** @var Request $request */
-        $request = $this->requestFactory->create($message->getChat()->getId(), $message->getText(), $state);
+        $request = $this->requestFactory->create($message->getChat()->getId(), $message->getText(), $callbackData, $state);
 
 
         /** @var Response $response */

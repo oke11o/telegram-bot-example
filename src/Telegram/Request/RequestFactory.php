@@ -2,7 +2,6 @@
 
 namespace App\Telegram\Request;
 
-use App\Entity\User;
 use App\Telegram\Controller\CancelController;
 use App\Telegram\Controller\ChangeLocaleController;
 use App\Telegram\Controller\CreateParticipantController;
@@ -11,7 +10,6 @@ use App\Telegram\Controller\MyParticipantController;
 use App\Telegram\State\State;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
-use TelegramBot\Api\Types\Update;
 
 class RequestFactory implements ServiceSubscriberInterface
 {
@@ -25,9 +23,14 @@ class RequestFactory implements ServiceSubscriberInterface
         $this->container = $container;
     }
 
-    public function create(int $chatId, string $text, State $state): Request
+    /**
+     * TODO: Возможное решение. Создать цепочку резолверов. Для каждого контроллера.
+     * Когда первый контроллер находит подходящий под себя запрос. Он прекращает цепочку.
+     * Если все контроллеры пропустили, то вызывается дефолтный.
+     */
+    public function create(int $chatId, string $text, string $callbackData = null, State $state): Request
     {
-        $arguments = new Arguments($chatId, $text);
+        $arguments = new Arguments($chatId, $text, $callbackData);
         $controllerName = $state->getCommandName();
 
         if ($text === ChangeLocaleController::COMMAND_NAME) {
