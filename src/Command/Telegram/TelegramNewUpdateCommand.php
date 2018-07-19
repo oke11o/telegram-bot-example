@@ -66,7 +66,13 @@ class TelegramNewUpdateCommand extends Command
 
         $count = 0;
         while (true) {
-            $updates = $this->api->getUpdates();
+            try {
+                $updates = $this->api->getUpdates();
+            } catch (\TelegramBot\Api\Exception $exception) {
+                $this->io->error($exception->getMessage());
+                sleep(6);
+                continue;
+            }
             $lastUpdateId = null;
             foreach ($updates as $update) {
                 $count++;
@@ -87,7 +93,7 @@ class TelegramNewUpdateCommand extends Command
             }
 
             $this->io->text(sprintf('Sleeping'));
-            sleep(1);
+            sleep(2);
             if ($this->shouldStop) {
                 break;
             }
