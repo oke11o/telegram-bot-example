@@ -62,31 +62,31 @@ class MainMyParticipantListTest extends AbstractMainTest
                     'buttons' => [
                         [
                             [
-                                'text' => 'ID: 1, Amount: 101, User: oke11o',
+                                'text' => sprintf('ID: 1, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '1',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 2, Amount: 102, User: oke11o',
+                                'text' => sprintf('ID: 2, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '2',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 3, Amount: 103, User: oke11o',
+                                'text' => sprintf('ID: 3, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '3',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 4, Amount: 104, User: oke11o',
+                                'text' => sprintf('ID: 4, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '4',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 5, Amount: 105, User: oke11o',
+                                'text' => sprintf('ID: 5, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '5',
                             ],
                         ],
@@ -115,31 +115,31 @@ class MainMyParticipantListTest extends AbstractMainTest
                     'buttons' => [
                         [
                             [
-                                'text' => 'ID: 6, Amount: 106, User: oke11o',
+                                'text' => sprintf('ID: 6, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '6',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 7, Amount: 107, User: oke11o',
+                                'text' => sprintf('ID: 7, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '7',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 8, Amount: 108, User: oke11o',
+                                'text' => sprintf('ID: 8, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '8',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 9, Amount: 109, User: oke11o',
+                                'text' => sprintf('ID: 9, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '9',
                             ],
                         ],
                         [
                             [
-                                'text' => 'ID: 10, Amount: 110, User: oke11o',
+                                'text' => sprintf('ID: 10, Amount: %f, User: oke11o', 1.3),
                                 'callback_data' => '10',
                             ],
                         ],
@@ -164,32 +164,32 @@ class MainMyParticipantListTest extends AbstractMainTest
                 ],
                 'response' => [
                     'chatId' => self::CHAT_ID,
-                    'text' => 'your.my.participant',
+                    'text' => 'your.participant.id.2
+Amount: 1, Eth: 0x123451234512345123451234512345',
                     'buttons' => [
                         [
                             [
-                                'text' => 'text 3',
-                                'callback_data' => 'callback data 1',
+                                'text' => 'list',
                             ],
                         ],
                         [
                             [
-                                'text' => 'text 4',
-                                'callback_data' => 'callback data 2',
-                            ],
-                        ],
-                        [
-                            [
-                                'text' => 'prev',
-                                'callback_data' => 'prev',
-                            ],
-                            [
-                                'text' => 'next',
-                                'callback_data' => 'next',
+                                'text' => 'main',
                             ],
                         ],
                     ],
-                    'buttonType' => 'inline',
+                    'buttonType' => 'simple',
+                ],
+            ],
+            'back to start message' => [
+                'request' => [
+                    'text' => 'main',
+                ],
+                'response' => [
+                    'chatId' => self::CHAT_ID,
+                    'text' => 'cancel',
+                    'buttons' => $this->defaultButtons(),
+                    'buttonType' => 'simple',
                 ],
             ],
         ];

@@ -4,6 +4,7 @@ namespace App\Telegram\Controller;
 
 use App\Entity\Participant;
 use App\Entity\User;
+use App\Repository\ParticipantRepository;
 use App\Telegram\Request\Arguments;
 use App\Telegram\Response\ClearReplyMessage;
 use App\Telegram\Response\Response;
@@ -19,10 +20,15 @@ class MyParticipantController implements TelegramControllerInterface
      * @var StateFactory
      */
     private $stateFactory;
+    /**
+     * @var ParticipantRepository
+     */
+    private $participantRepository;
 
-    public function __construct(StateFactory $stateFactory)
+    public function __construct(StateFactory $stateFactory, ParticipantRepository $participantRepository)
     {
         $this->stateFactory = $stateFactory;
+        $this->participantRepository = $participantRepository;
     }
 
     public function index(Arguments $arguments, State $state, User $user): Response
@@ -107,7 +113,7 @@ Amount: %d, Eth: %s',
             $result[] = [
                 [
                     'text' => sprintf(
-                        'ID: %d, Amount: %d, User: %s',
+                        'ID: %d, Amount: %f, User: %s',
                         $participant->getId(),
                         $participant->getAmount(),
                         $participant->getUser()->getUsername()
@@ -145,28 +151,12 @@ Amount: %d, Eth: %s',
 
     private function getParticipant($id, User $user)
     {
-        return $this->createParticipant($id, $user);
+        return $this->participantRepository->findOneByUser($id, $user);
     }
 
     private function getParticipants(User $user)
     {
-        $count = 13;
-        $result = [];
-        for ($i = 1; $i <= $count; $i++) {
-            $result[] = $this->createParticipant($i, $user);
-        }
-
-        return $result;
-    }
-
-    private function createParticipant($id, User $user): Participant
-    {
-        return (new Participant())
-            ->setId($id)
-            ->setUser($user)
-            ->setAmount($id + 100)
-            ->setYandexWallet(bin2hex(\random_bytes(16)))
-            ->setEthWallet(bin2hex(\random_bytes(16)));
+        return $this->participantRepository->findByUser($user);
     }
 
     private function paginateList($list, ParticipantListDto $data)

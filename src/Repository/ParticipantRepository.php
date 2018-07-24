@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Participant;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -17,6 +18,25 @@ class ParticipantRepository extends ServiceEntityRepository
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Participant::class);
+    }
+
+    /**
+     * @param User $user
+     * @return Participant[]
+     */
+    public function findByUser(User $user)
+    {
+        return $this->findBy(['user' => $user]);
+    }
+
+    /**
+     * @param int $id
+     * @param User $user
+     * @return Participant
+     */
+    public function findOneByUser(int $id, User $user)
+    {
+        return $this->findOneBy(['id' => $id, 'user' => $user]);
     }
 
 //    /**

@@ -202,6 +202,7 @@ class CreateParticipantController implements TelegramControllerInterface
      */
     private function validateYandexWallet(string $wallet): bool
     {
+//        return !empty($wallet);
         return strlen($wallet) === 32;
     }
 
@@ -211,6 +212,7 @@ class CreateParticipantController implements TelegramControllerInterface
      */
     private function validateETHWallet(string $wallet): bool
     {
+//        return !empty($wallet);
         return strlen($wallet) === 32 && strpos($wallet, '0x') === 0;
     }
 

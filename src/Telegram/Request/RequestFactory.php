@@ -60,7 +60,7 @@ class RequestFactory implements ServiceSubscriberInterface
         }
 
         if ($controllerName === CreateParticipantController::COMMAND_NAME) {
-            if ($text === CancelController::COMMAND_NAME) {
+            if ($text === CancelController::COMMAND_NAME || $text === 'main') {
                 $controller = $this->container->get(CancelController::class);
                 $actionName = 'cancel';
             } else {
@@ -80,7 +80,7 @@ class RequestFactory implements ServiceSubscriberInterface
         }
 
         if ($controllerName === MyParticipantController::COMMAND_NAME) {
-            if ($text === CancelController::COMMAND_NAME) {
+            if ($text === CancelController::COMMAND_NAME || $text === 'main') {
                 $controller = $this->container->get(CancelController::class);
                 $actionName = 'cancel';
             } else {
